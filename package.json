@@ -1,5 +1,5 @@
 {
-  "name": "spreadsheet_like_vector_graphics_editor",
+  "name": "ruler_based_vector_graphics_editor",
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
