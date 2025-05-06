@@ -48,8 +48,8 @@ export class ControlRulerLineView {
     private dom: SVGLineElement | null = null;
     private onStartDragCallback?: (ruler: ChainedRuler, e: MouseEvent) => void;
 
-    private baseStrokeWidth: number = 5;
-    private svgStrokeWidth: number = 5;
+    private baseStrokeWidth: number = 10;
+    private svgStrokeWidth: number = 10;
 
     constructor(
         private ruler: Ruler,

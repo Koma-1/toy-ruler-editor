@@ -1,3 +1,5 @@
+import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+
 export class EditorContext {
     private zoom: number = 1.0;
     private canvasWidth: number = 640;
@@ -6,8 +8,18 @@ export class EditorContext {
     private canvasMarginRight: number = 400;
     private canvasMarginBottom: number = 400;
     private canvasMarginLeft: number = 400;
+    public controller: EditorInteractionContoroller = new EditorInteractionContoroller(() => {this.requestRender();});
+    private renderCallback: () => void = () => {};
 
     constructor() {}
+
+    setRenderCallback(callback: () => void) {
+        this.renderCallback = callback;
+    }
+
+    requestRender() {
+        this.renderCallback();
+    }
 
     getZoom() {
         return this.zoom;

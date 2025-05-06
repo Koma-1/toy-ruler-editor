@@ -3,16 +3,19 @@ import { CornerRulerAreaView } from "./CornerRulerAreaView";
 import { EditorPlaneView } from "./EditorPlaneView";
 import { RulerAreaView } from "./RulerAreaView";
 import { EditorContext } from "./EditorContext";
+import { ToolBar as ToolBarView } from "./ToolBarView";
 
 export class EditorScreen {
     private editorPlaneView: EditorPlaneView;
     private rulerAreaView: RulerAreaView;
     private cornerRulerAreaView: CornerRulerAreaView;
+    private toolBarView: ToolBarView;
     constructor(
         private container: HTMLDivElement,
         private model: EditorPlane,
         private context: EditorContext,
     ) {
+        this.context.setRenderCallback(() => {this.render();});
         while (this.container.firstChild) {
             this.container.removeChild(this.container.firstChild);
         }
@@ -21,7 +24,9 @@ export class EditorScreen {
             editorPlaneContainer,
             hRulerAreaContainer,
             vRulerAreaContainer,
-            cornerRulerAreaContainer] = this.createLayout();
+            cornerRulerAreaContainer,
+            toolBarContainer,
+        ] = this.createLayout();
 
         this.editorPlaneView = new EditorPlaneView(editorPlaneContainer, this.model, this.context);
         this.rulerAreaView = new RulerAreaView(
@@ -31,17 +36,19 @@ export class EditorScreen {
             this.context,
             () => this.render());
         this.cornerRulerAreaView = new CornerRulerAreaView(cornerRulerAreaContainer, this.model);
+        this.toolBarView = new ToolBarView(toolBarContainer, this.model, this.context);
 
         this.setScreenSize(500, 500, 50);
         // this.context.setCanvasSize(800, 800);
     }
 
-    private createLayout(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
+    private createLayout(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
         const [
             editorPlaneContainer,
             hRulerAreaContainer,
             vRulerAreaContainer,
-            cornerRulerAreaContainer
+            cornerRulerAreaContainer,
+            toolBarContainer
         ] = this.createContainers();
 
         this.setupScrollSync(editorPlaneContainer, hRulerAreaContainer, vRulerAreaContainer);
@@ -57,42 +64,22 @@ export class EditorScreen {
         row2.appendChild(editorPlaneContainer);
         this.container.appendChild(row1);
         this.container.appendChild(row2);
-
-        const row3 = document.createElement("div");
-        const zoomUp = document.createElement("button");
-        row3.appendChild(zoomUp);
-        zoomUp.innerText = "Zoom Up";
-        zoomUp.addEventListener("click", (e) => {
-            this.context.setZoom(this.context.getZoom() + 0.1);
-            this.render();
-        });
-        const zoomReset = document.createElement("button");
-        row3.appendChild(zoomReset);
-        zoomReset.innerText = "Zoom Reset";
-        zoomReset.addEventListener("click", (e) => {
-            this.context.resetZoom();
-            this.render();
-        });
-        const zoomDown = document.createElement("button");
-        row3.appendChild(zoomDown);
-        zoomDown.innerText = "Zoom Down";
-        zoomDown.addEventListener("click", (e) => {
-            this.context.setZoom(this.context.getZoom() - 0.1);
-            this.render();
-        });
-        this.container.appendChild(row3);
+        this.container.appendChild(toolBarContainer);
         return [
             editorPlaneContainer,
             hRulerAreaContainer,
             vRulerAreaContainer,
-            cornerRulerAreaContainer];
+            cornerRulerAreaContainer,
+            toolBarContainer,
+        ];
     }
 
-    private createContainers(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
+    private createContainers(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
         const editorPlaneContainer = document.createElement("div");
         const hRulerAreaContainer = document.createElement("div");
         const vRulerAreaContainer = document.createElement("div");
         const cornerRulerAreaContainer = document.createElement("div");
+        const toolBarContainer = document.createElement("div");
         editorPlaneContainer.setAttribute("id", "editorPlaneContainer");
         hRulerAreaContainer.setAttribute("id", "hRulerAreaContainer");
         vRulerAreaContainer.setAttribute("id", "vRulerAreaContainer");
@@ -105,13 +92,14 @@ export class EditorScreen {
         hRulerAreaContainer.style.overflow = "hidden";
         vRulerAreaContainer.style.overflow = "hidden";
         cornerRulerAreaContainer.style.overflow = "hidden";
-        return [editorPlaneContainer, hRulerAreaContainer, vRulerAreaContainer, cornerRulerAreaContainer];
+        return [editorPlaneContainer, hRulerAreaContainer, vRulerAreaContainer, cornerRulerAreaContainer, toolBarContainer];
     }
 
     public render() {
         this.editorPlaneView.render();
         this.rulerAreaView.render();
         this.cornerRulerAreaView.render();
+        this.toolBarView.render();
     }
 
     private setupScrollSync(

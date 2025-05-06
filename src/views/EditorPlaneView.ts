@@ -1,6 +1,7 @@
 import { EditorPlane } from "../core/EditorPlane";
 import { NS } from "../util/util";
 import { EditorContext } from "./EditorContext";
+import { IntersectionPickerView } from "./IntersectionPickerView";
 import { RectElementView } from "./RectElementView";
 import { DisplayRulerLineView } from "./RulerLineView";
 
@@ -10,6 +11,7 @@ export class EditorPlaneView {
     private backgroundPlane: SVGGElement;
     private contentPlane: SVGGElement;
     private rulerPlane: SVGGElement;
+    private intersectionPlane: SVGGElement;
     constructor(
         private container: HTMLDivElement,
         private model: EditorPlane,
@@ -22,9 +24,11 @@ export class EditorPlaneView {
         this.backgroundPlane = document.createElementNS(NS, "g");
         this.contentPlane = document.createElementNS(NS, "g");
         this.rulerPlane = document.createElementNS(NS, "g");
+        this.intersectionPlane = document.createElementNS(NS, "g");
         this.drawingGroup.appendChild(this.backgroundPlane);
         this.drawingGroup.appendChild(this.contentPlane);
         this.drawingGroup.appendChild(this.rulerPlane);
+        this.drawingGroup.appendChild(this.intersectionPlane);
     }
 
     setScreenSize(width: number, height: number) {
@@ -63,6 +67,11 @@ export class EditorPlaneView {
             view.setZoom(this.context.getZoom());
             view.render();
         }
+
+        do {
+            const view = new IntersectionPickerView(this.intersectionPlane, this.model, this.context);
+            view.render();
+        } while (0);
     }
 
     private addBackground(root: SVGGElement) {

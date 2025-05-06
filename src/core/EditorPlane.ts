@@ -23,6 +23,16 @@ export class EditorPlane {
         return Array.from(this.rulers.values());
     }
 
+    getAllIntersections(): {xRuler: Ruler, yRuler: Ruler}[] {
+        let result: {xRuler: Ruler, yRuler: Ruler}[] = [];
+        for (const xRuler of this.getAllRulers().filter((ruler) => {return ruler.direction === "vertical"})) {
+            for (const yRuler of this.getAllRulers().filter((ruler) => {return ruler.direction === "horizontal"})) {
+                result.push({xRuler: xRuler, yRuler: yRuler});
+            }
+        }
+        return result;
+    }
+
     getElements(): RectElement[] {
         return this.elements;
     }
