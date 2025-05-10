@@ -113,8 +113,5 @@ export class EditorPlaneView {
         bg2.setAttribute("fill", "white");
         root.appendChild(bg1);
         root.appendChild(bg2);
-
-
-
     }
 }

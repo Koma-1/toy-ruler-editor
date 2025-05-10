@@ -1,9 +1,8 @@
 import { InteractionEvent } from "../controller/events";
+import { EditorPlane } from "../core/EditorPlane";
 
 export class EditorContext {
     private zoom: number = 1.0;
-    private canvasWidth: number = 640;
-    private canvasHeight: number = 480;
     private canvasMarginTop: number = 400;
     private canvasMarginRight: number = 400;
     private canvasMarginBottom: number = 400;
@@ -30,7 +29,7 @@ export class EditorContext {
         },
     }
 
-    constructor() {}
+    constructor(private model: EditorPlane) {}
 
     setRenderCallback(callback: () => void) {
         this.renderCallback = callback;
@@ -70,23 +69,18 @@ export class EditorContext {
     }
 
     getCanvasWidth(): number {
-        return this.canvasWidth;
+        return this.model.getWidth();
     }
 
     getCanvasHeight(): number {
-        return this.canvasHeight;
-    }
-
-    setCanvasSize(width: number, height: number) {
-        this.canvasWidth = width;
-        this.canvasHeight = height;
+        return this.model.getHeight();
     }
 
     getSvgWidth(): number {
-        return (this.canvasMarginLeft + this.canvasWidth + this.canvasMarginRight) * this.zoom;
+        return (this.canvasMarginLeft + this.getCanvasWidth() + this.canvasMarginRight) * this.zoom;
     }
 
     getSvgHeight(): number {
-        return (this.canvasMarginTop + this.canvasHeight + this.canvasMarginBottom) * this.zoom;
+        return (this.canvasMarginTop + this.getCanvasHeight() + this.canvasMarginBottom) * this.zoom;
     }
 }

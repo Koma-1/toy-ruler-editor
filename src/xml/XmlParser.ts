@@ -8,6 +8,8 @@ export class XmlParser {
     private rulerMap = new Map<string, Ruler>();
     private rectMap = new Map<string, RectElement>();
     private rectList: RectElement[] = [];
+    private width?: number;
+    private height?: number;
 
     public parse(xmlStr: string): EditorPlane {
         if (xmlStr.length > 50000) {
@@ -20,8 +22,24 @@ export class XmlParser {
         if (errorNode) {
             console.log("parse error");
         } else {
-            console.log(doc.documentElement.nodeName);
         }
+
+        for (const attr of doc.documentElement.attributes) {
+            if (attr.name === "width") {
+                const val = Number(attr.value);
+                if (Number.isNaN(val)) {
+                    throw "nan";
+                }
+                this.width = val;
+            } else if (attr.name === "height") {
+                const val = Number(attr.value);
+                if (Number.isNaN(val)) {
+                    throw "nan";
+                }
+                this.height = val;
+            }
+        }
+
         for (const elem of Array.from(doc.documentElement.children)) {
             switch (elem.tagName) {
                 case "ruler":
@@ -36,6 +54,8 @@ export class XmlParser {
         }
 
         return new EditorPlane(
+            this.width,
+            this.height,
             Array.from(this.rulerMap.values()),
             this.rectList,
         )

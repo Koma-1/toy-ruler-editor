@@ -6,6 +6,8 @@ export class EditorPlane {
     private elements: RectElement[] = [];
 
     constructor(
+        private width?: number,
+        private height?: number,
         initialRulers: Ruler[] = [],
         initialElements: RectElement[] = []
     ) {
@@ -43,5 +45,13 @@ export class EditorPlane {
 
     removeElementById(id: string): void {
         this.elements = this.elements.filter(e => e.id !== id);
+    }
+
+    getWidth(): number {
+        return this.width ?? 0;
+    }
+
+    getHeight(): number {
+        return this.height ?? 0;
     }
 }

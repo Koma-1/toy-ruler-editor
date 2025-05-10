@@ -21,10 +21,8 @@ export class PointPickerView {
         }
 
         if (!this.context.pointPicker.enabled) {
-            console.log("PointPickerView.ctx.pointPicker.disable");
             return;
         }
-        console.log("PointPickerView.ctx.pointPicker.enable");
 
         const hoverLayer = document.createElementNS(NS, "rect");
         hoverLayer.setAttribute("x", "0");

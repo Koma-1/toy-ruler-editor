@@ -19,7 +19,7 @@ export class EditorScreen {
         private container: HTMLDivElement,
         private model: EditorPlane,
     ) {
-        this.context = new EditorContext();
+        this.context = new EditorContext(model);
         this.controller = new EditorInteractionContoroller({
             enableIntersectionPicker: (e) => {
                 console.log("EditorInteractionContoroller.env.enableIntersectionPicker ->", e);
@@ -71,7 +71,7 @@ export class EditorScreen {
 
         this.toolBarView = new ToolBarView(c2, this.model, this.context, this.controller);
 
-        this.setScreenSize(500, 500, 50);
+        this.setScreenSize(700, 500, 50);
     }
 
     public render() {

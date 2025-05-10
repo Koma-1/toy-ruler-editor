@@ -1,6 +1,7 @@
 import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
 import { InsertRectState } from "../controller/InsertRectState";
 import { EditorPlane } from "../core/EditorPlane";
+import { SvgSerializer } from "../svg/SvgSerializer";
 import { EditorContext } from "./EditorContext";
 
 export class ToolBar {
@@ -58,6 +59,22 @@ export class ToolBar {
             this.context.pointPicker.toggleSnap();
         })
         this.container.appendChild(toglleSnapButton);
+
+        const exportButton = document.createElement("button");
+        exportButton.innerText = "Export SVG";
+        exportButton.addEventListener("click", (e) => {
+            const svgText = new SvgSerializer(this.model).serialize()
+            const svgBlob = new Blob([svgText], { type: 'image/svg+xml' });
+            const svgUrl = URL.createObjectURL(svgBlob);
+            const a = document.createElement('a');
+            a.href = svgUrl;
+            a.download = "out.svg";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(svgUrl);
+        });
+        this.container.appendChild(exportButton);
     }
 
 }
