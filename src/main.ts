@@ -14,8 +14,7 @@ button.addEventListener("click", () => {
 
   try {
     const model = new XmlParser().parse(xml);
-    const context = new EditorContext();
-    currentScreen = new EditorScreen(editorScreen, model, context);
+    currentScreen = new EditorScreen(editorScreen, model);
     currentScreen.render();
   } catch (e) {
     console.error("XML parsing/rendering failed:", e);

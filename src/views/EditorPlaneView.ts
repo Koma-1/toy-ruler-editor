@@ -1,9 +1,10 @@
+import { InteractionEvent } from "../controller/events";
 import { EditorPlane } from "../core/EditorPlane";
 import { NS } from "../util/util";
 import { EditorContext } from "./EditorContext";
-import { IntersectionPickerView } from "./IntersectionPickerView";
+import { PointPickerView } from "./PointPickerView";
 import { RectElementView } from "./RectElementView";
-import { DisplayRulerLineView } from "./RulerLineView";
+import { DisplayRulerLineView } from "./DisplayRulerLineView";
 
 export class EditorPlaneView {
     private svgRoot: SVGSVGElement;
@@ -12,6 +13,7 @@ export class EditorPlaneView {
     private contentPlane: SVGGElement;
     private rulerPlane: SVGGElement;
     private intersectionPlane: SVGGElement;
+    private onScroll?: (left: number, top: number) => void;
     constructor(
         private container: HTMLDivElement,
         private model: EditorPlane,
@@ -29,6 +31,22 @@ export class EditorPlaneView {
         this.drawingGroup.appendChild(this.contentPlane);
         this.drawingGroup.appendChild(this.rulerPlane);
         this.drawingGroup.appendChild(this.intersectionPlane);
+        this.container.addEventListener("scroll", () => {
+            this.onScroll?.(this.container.scrollLeft, this.container.scrollTop);
+        });
+    }
+
+    setScrollListener(listener: (left: number, top: number) => void): void {
+        this.onScroll = listener;
+    }
+
+    static createAndAttach(parent: HTMLDivElement, model: EditorPlane, context: EditorContext): EditorPlaneView {
+        const container = document.createElement("div");
+        container.id = "editorPlaneContainer";
+        container.style.overflow = "scroll";
+        container.style.display = "inline-block";
+        parent.appendChild(container);
+        return new EditorPlaneView(container, model, context);
     }
 
     setScreenSize(width: number, height: number) {
@@ -69,7 +87,7 @@ export class EditorPlaneView {
         }
 
         do {
-            const view = new IntersectionPickerView(this.intersectionPlane, this.model, this.context);
+            const view = new PointPickerView(this.intersectionPlane, this.model, this.context);
             view.render();
         } while (0);
     }

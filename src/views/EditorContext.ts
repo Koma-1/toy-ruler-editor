@@ -1,4 +1,4 @@
-import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+import { InteractionEvent } from "../controller/events";
 
 export class EditorContext {
     private zoom: number = 1.0;
@@ -8,8 +8,27 @@ export class EditorContext {
     private canvasMarginRight: number = 400;
     private canvasMarginBottom: number = 400;
     private canvasMarginLeft: number = 400;
-    public controller: EditorInteractionContoroller = new EditorInteractionContoroller(() => {this.requestRender();});
     private renderCallback: () => void = () => {};
+    private pushEventCallback: (e: InteractionEvent) => void = () => {};
+    readonly pointPicker = {
+        enabled: false,
+        enable: () => {
+            console.log("ctx.pointPicker.enable");
+            this.pointPicker.enabled = true;
+            this.requestRender();
+        },
+        disable: () => {
+            console.log("ctx.pointPicker.disable");
+            this.pointPicker.enabled = false;
+            this.requestRender();
+        },
+        isSnap: true,
+        toggleSnap: () => {
+            console.log("ctx.pointPicker.toggleSnap -> ", !this.pointPicker.isSnap);
+            this.pointPicker.isSnap = !this.pointPicker.isSnap;
+            this.requestRender();
+        },
+    }
 
     constructor() {}
 
@@ -20,6 +39,15 @@ export class EditorContext {
     requestRender() {
         this.renderCallback();
     }
+
+    setPushEventCallback(callback: (e: InteractionEvent) => void) {
+        this.pushEventCallback = callback;
+    }
+
+    pushEvent(e: InteractionEvent) {
+        this.pushEventCallback(e);
+    }
+
 
     getZoom() {
         return this.zoom;
@@ -61,5 +89,4 @@ export class EditorContext {
     getSvgHeight(): number {
         return (this.canvasMarginTop + this.canvasHeight + this.canvasMarginBottom) * this.zoom;
     }
-
 }

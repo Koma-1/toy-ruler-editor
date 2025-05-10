@@ -4,101 +4,79 @@ import { EditorPlaneView } from "./EditorPlaneView";
 import { RulerAreaView } from "./RulerAreaView";
 import { EditorContext } from "./EditorContext";
 import { ToolBar as ToolBarView } from "./ToolBarView";
+import { XAxisRulerAreaView } from "./XAxisRulerAreaView";
+import { YAxisRulerAreaView } from "./YAxisRulerAreaView";
+import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+import { InteractionEvent } from "../controller/events";
 
 export class EditorScreen {
     private editorPlaneView: EditorPlaneView;
     private rulerAreaView: RulerAreaView;
-    private cornerRulerAreaView: CornerRulerAreaView;
     private toolBarView: ToolBarView;
+    private context: EditorContext;
+    public controller: EditorInteractionContoroller;
     constructor(
         private container: HTMLDivElement,
         private model: EditorPlane,
-        private context: EditorContext,
     ) {
+        this.context = new EditorContext();
+        this.controller = new EditorInteractionContoroller({
+            enableIntersectionPicker: (e) => {
+                console.log("EditorInteractionContoroller.env.enableIntersectionPicker ->", e);
+                if (e) {
+                    this.context.pointPicker.enable();
+                    this.context.requestRender();
+                } else {
+                    this.context.pointPicker.disable();
+                    this.context.requestRender();
+                }
+            },
+            requestRender: () => {this.context.requestRender();},
+            deleteSelectedElement: () => {},
+            addElement: (e) => {this.model.addElement(e);},
+        });
+        this.context.setPushEventCallback((e: InteractionEvent) => {
+            this.controller.push(e);
+        });
+
         this.context.setRenderCallback(() => {this.render();});
         while (this.container.firstChild) {
             this.container.removeChild(this.container.firstChild);
         }
 
-        const [
-            editorPlaneContainer,
-            hRulerAreaContainer,
-            vRulerAreaContainer,
-            cornerRulerAreaContainer,
-            toolBarContainer,
-        ] = this.createLayout();
+        const c1 = document.createElement("div");
+        c1.style.display = "inline-block";
+        this.container.appendChild(c1);
+        const c11 = document.createElement("div");
+        const c12 = document.createElement("div");
+        c1.appendChild(c11);
+        c1.appendChild(c12);
 
-        this.editorPlaneView = new EditorPlaneView(editorPlaneContainer, this.model, this.context);
+
+        const cornerRulerAreaView = CornerRulerAreaView.createAndAttach(c11, this.model, this.context);
+        const xAxisRulerAreaView = XAxisRulerAreaView.createAndAttach(c11, this.model, this.context);
+        const yAxisRulerAreaView = YAxisRulerAreaView.createAndAttach(c12, this.model, this.context);
+        this.editorPlaneView = EditorPlaneView.createAndAttach(c12, this.model, this.context);
         this.rulerAreaView = new RulerAreaView(
-            hRulerAreaContainer,
-            vRulerAreaContainer,
-            model,
-            this.context,
-            () => this.render());
-        this.cornerRulerAreaView = new CornerRulerAreaView(cornerRulerAreaContainer, this.model);
-        this.toolBarView = new ToolBarView(toolBarContainer, this.model, this.context);
+            xAxisRulerAreaView,
+            yAxisRulerAreaView,
+            cornerRulerAreaView,
+        );
+
+        this.editorPlaneView.setScrollListener((l, t) => {this.rulerAreaView.setScroll(l, t);});
+
+        const c2 = document.createElement("div");
+        c2.style.display = "inline-block";
+        this.container.appendChild(c2);
+
+        this.toolBarView = new ToolBarView(c2, this.model, this.context, this.controller);
 
         this.setScreenSize(500, 500, 50);
-        // this.context.setCanvasSize(800, 800);
-    }
-
-    private createLayout(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
-        const [
-            editorPlaneContainer,
-            hRulerAreaContainer,
-            vRulerAreaContainer,
-            cornerRulerAreaContainer,
-            toolBarContainer
-        ] = this.createContainers();
-
-        this.setupScrollSync(editorPlaneContainer, hRulerAreaContainer, vRulerAreaContainer);
-
-
-        const row1 = document.createElement("div");
-        row1.setAttribute("id", "editorRow1");
-        row1.appendChild(cornerRulerAreaContainer);
-        row1.appendChild(vRulerAreaContainer);
-        const row2 = document.createElement("div");
-        row2.setAttribute("id", "editorRow2");
-        row2.appendChild(hRulerAreaContainer);
-        row2.appendChild(editorPlaneContainer);
-        this.container.appendChild(row1);
-        this.container.appendChild(row2);
-        this.container.appendChild(toolBarContainer);
-        return [
-            editorPlaneContainer,
-            hRulerAreaContainer,
-            vRulerAreaContainer,
-            cornerRulerAreaContainer,
-            toolBarContainer,
-        ];
-    }
-
-    private createContainers(): [HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement, HTMLDivElement] {
-        const editorPlaneContainer = document.createElement("div");
-        const hRulerAreaContainer = document.createElement("div");
-        const vRulerAreaContainer = document.createElement("div");
-        const cornerRulerAreaContainer = document.createElement("div");
-        const toolBarContainer = document.createElement("div");
-        editorPlaneContainer.setAttribute("id", "editorPlaneContainer");
-        hRulerAreaContainer.setAttribute("id", "hRulerAreaContainer");
-        vRulerAreaContainer.setAttribute("id", "vRulerAreaContainer");
-        cornerRulerAreaContainer.setAttribute("id", "cornerRulerAreaContainer");
-        editorPlaneContainer.style.display = "inline-block";
-        hRulerAreaContainer.style.display = "inline-block";
-        vRulerAreaContainer.style.display = "inline-block";
-        cornerRulerAreaContainer.style.display = "inline-block";
-        editorPlaneContainer.style.overflow = "scroll";
-        hRulerAreaContainer.style.overflow = "hidden";
-        vRulerAreaContainer.style.overflow = "hidden";
-        cornerRulerAreaContainer.style.overflow = "hidden";
-        return [editorPlaneContainer, hRulerAreaContainer, vRulerAreaContainer, cornerRulerAreaContainer, toolBarContainer];
     }
 
     public render() {
         this.editorPlaneView.render();
         this.rulerAreaView.render();
-        this.cornerRulerAreaView.render();
         this.toolBarView.render();
     }
 
@@ -116,7 +94,6 @@ export class EditorScreen {
     private setScreenSize(width: number, height: number, rulerAreaWidth: number) {
         this.editorPlaneView.setScreenSize(width, height);
         this.rulerAreaView.setRulerAreaSize(width, height, rulerAreaWidth);
-        this.cornerRulerAreaView.setScreenSize(rulerAreaWidth, rulerAreaWidth);
     }
 
 }

@@ -1,5 +1,6 @@
 import { RectElement } from "../core/Rect";
 import { NS } from "../util/util";
+import { InteractionEvent } from "../controller/events";
 
 export class RectElementView {
     private dom : SVGRectElement | null = null;

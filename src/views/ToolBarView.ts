@@ -1,3 +1,4 @@
+import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
 import { InsertRectState } from "../controller/InsertRectState";
 import { EditorPlane } from "../core/EditorPlane";
 import { EditorContext } from "./EditorContext";
@@ -7,6 +8,7 @@ export class ToolBar {
         private container: HTMLDivElement,
         private model: EditorPlane,
         private context: EditorContext,
+        private controller: EditorInteractionContoroller
     ) {}
 
     render() {
@@ -39,16 +41,23 @@ export class ToolBar {
         const cancelButton = document.createElement("button");
         cancelButton.innerText = "Cancel";
         cancelButton.addEventListener("click", (e) => {
-            this.context.controller.push({type: "cancel"});
+            this.controller.push({type: "cancel"});
         })
         this.container.appendChild(cancelButton);
 
         const addRectButton = document.createElement("button");
         addRectButton.innerText = "Add Rect";
         addRectButton.addEventListener("click", (e) => {
-            this.context.controller.setState(new InsertRectState(this.context.controller, this.model));
+            this.controller.enter(new InsertRectState());
         })
         this.container.appendChild(addRectButton);
+
+        const toglleSnapButton = document.createElement("button");
+        toglleSnapButton.innerText = "Toggle Snap";
+        toglleSnapButton.addEventListener("click", (e) => {
+            this.context.pointPicker.toggleSnap();
+        })
+        this.container.appendChild(toglleSnapButton);
     }
 
 }
