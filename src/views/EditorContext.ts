@@ -9,6 +9,7 @@ export class EditorContext {
     private canvasMarginLeft: number = 400;
     private renderCallback: () => void = () => {};
     private pushEventCallback: (e: InteractionEvent) => void = () => {};
+    private getSelectedIdsCallback: () => string[] = () => {return []};
     readonly pointPicker = {
         enabled: false,
         enable: () => {
@@ -25,6 +26,19 @@ export class EditorContext {
         toggleSnap: () => {
             console.log("ctx.pointPicker.toggleSnap -> ", !this.pointPicker.isSnap);
             this.pointPicker.isSnap = !this.pointPicker.isSnap;
+            this.requestRender();
+        },
+    }
+    readonly selectElement = {
+        enabled: true,
+        enable: () => {
+            console.log("ctx.selectElement.enable");
+            this.selectElement.enabled = true;
+            this.requestRender();
+        },
+        disable: () => {
+            console.log("ctx.selectElement.disable");
+            this.selectElement.enabled = false;
             this.requestRender();
         },
     }
@@ -45,6 +59,14 @@ export class EditorContext {
 
     pushEvent(e: InteractionEvent) {
         this.pushEventCallback(e);
+    }
+
+    setSelectedIdsCallback(callback: () => string[]) {
+        this.getSelectedIdsCallback = callback;
+    }
+
+    getSelectedIds(): string[] {
+        return this.getSelectedIdsCallback();
     }
 
 

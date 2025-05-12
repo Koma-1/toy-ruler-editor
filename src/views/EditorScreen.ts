@@ -31,12 +31,27 @@ export class EditorScreen {
                     this.context.requestRender();
                 }
             },
+            enableElementSelection: (e) => {
+                if (e) {
+                    this.context.selectElement.enable();
+                    this.context.requestRender();
+                } else {
+                    this.context.selectElement.disable();
+                    this.context.requestRender();
+                }
+            },
             requestRender: () => {this.context.requestRender();},
-            deleteSelectedElement: () => {},
+            removeElement: (id) => {
+                this.model.removeElementById(id);
+            },
             addElement: (e) => {this.model.addElement(e);},
         });
         this.context.setPushEventCallback((e: InteractionEvent) => {
             this.controller.push(e);
+        });
+        this.context.setSelectedIdsCallback(() => {
+            console.log("CALL getSelectedIdsCallback");
+            return this.controller.getSelectedIds();
         });
 
         this.context.setRenderCallback(() => {this.render();});
