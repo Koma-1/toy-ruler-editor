@@ -39,12 +39,23 @@ export class EditorPlane {
         return this.elements;
     }
 
+    getElement(id: string): RectElement | null {
+        for (const elem of this.elements) {
+            if (elem.id === id) {
+                return elem;
+            }
+        }
+        return null;
+    }
+
     addElement(element: RectElement): void {
         this.elements.push(element);
     }
 
     removeElementById(id: string): void {
+        console.log(this.elements);
         this.elements = this.elements.filter(e => e.id !== id);
+        console.log("-> ", this.elements);
     }
 
     getWidth(): number {

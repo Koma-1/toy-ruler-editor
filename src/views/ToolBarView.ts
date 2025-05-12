@@ -55,7 +55,6 @@ export class ToolBar {
 
         const selectRectButton = document.createElement("button");
         selectRectButton.innerText = "Select Rect";
-        
 
         const toglleSnapButton = document.createElement("button");
         toglleSnapButton.innerText = "Toggle Snap";
@@ -63,6 +62,13 @@ export class ToolBar {
             this.context.pointPicker.toggleSnap();
         })
         this.container.appendChild(toglleSnapButton);
+
+        const removeSelectedRectButton = document.createElement("button");
+        removeSelectedRectButton.innerText = "Remove";
+        removeSelectedRectButton.addEventListener("click", (e) => {
+            this.controller.push({type: "command", command: "remove"});
+        })
+        this.container.appendChild(removeSelectedRectButton);
 
         const exportButton = document.createElement("button");
         exportButton.innerText = "Export SVG";

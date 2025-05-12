@@ -4,10 +4,12 @@ import { IdleState } from "./IdleState";
 import { InteractionEvent } from "./events";
 import { InteractionEnvironment } from "./InteractionEnvironment";
 import { ControllerEvent, InteractionContext } from "./InteractionContext";
+import { EditElementState } from "./EditElementState";
 
 export class EditorInteractionController {
     private childState: InteractionState;
     private context: InteractionContext;
+    private selectedElements: Set<string> = new Set();
 
     constructor(
         env: InteractionEnvironment,
@@ -15,8 +17,15 @@ export class EditorInteractionController {
         this.context = {
             env: env,
             emitEvent: (e) => {this.handleState(e);}, // TODO
+            selection: {
+                add: (id) => {this.addSelectedElement(id);},
+                delete: (id) => {this.deleteSelectedElement(id);},
+                clear: () => {this.resetSelectedElement();},
+                has: (id) => {return this.hasSelectedElement(id);},
+                entries: () => {return this.getAllSelectedElement();},
+            }
         }
-        this.childState = new IdleState();
+        this.childState = new EditElementState();
         this.childState.enter?.(this.context);
     }
 
@@ -27,11 +36,11 @@ export class EditorInteractionController {
     handleState(e: ControllerEvent): void {
         switch (e.type) {
             case "complete":
-                this.childState = new IdleState();
+                this.childState = new EditElementState();
                 this.childState.enter?.(this.context);
                 break;
             case "cancel":
-                this.childState = new IdleState();
+                this.childState = new EditElementState();
                 this.childState.enter?.(this.context);
                 break;
             default:
@@ -46,9 +55,7 @@ export class EditorInteractionController {
 
     enter(state: InteractionState): boolean {
         console.log(this.childState.getMode());
-        if (this.getMode() !== "idle") {
-            return false;
-        }
+        this.childState.push({type: "cancel"});
         console.log("->", state.getMode());
         this.childState = state;
         state.enter?.(this.context);
@@ -57,5 +64,29 @@ export class EditorInteractionController {
 
     cancel(): void {
         this.push({type: "cancel"});
+    }
+
+    addSelectedElement(id: string): void {
+        this.selectedElements.add(id);
+    }
+
+    deleteSelectedElement(id: string): void {
+        this.selectedElements.delete(id);
+    }
+
+    resetSelectedElement(): void {
+        this.selectedElements.clear();
+    }
+
+    hasSelectedElement(id: string): boolean {
+        return this.selectedElements.has(id);
+    }
+
+    getAllSelectedElement(): string[] {
+        return Array.from(this.selectedElements);
+    }
+
+    getSelectedIds(): string[] {
+        return Array.from(this.selectedElements);
     }
 }

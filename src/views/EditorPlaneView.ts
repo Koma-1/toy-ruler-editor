@@ -5,6 +5,7 @@ import { EditorContext } from "./EditorContext";
 import { PointPickerView } from "./PointPickerView";
 import { RectElementView } from "./RectElementView";
 import { DisplayRulerLineView } from "./DisplayRulerLineView";
+import { RectSelectionOverlayView } from "./RectSelectionOverlayView";
 
 export class EditorPlaneView {
     private svgRoot: SVGSVGElement;
@@ -13,6 +14,7 @@ export class EditorPlaneView {
     private contentPlane: SVGGElement;
     private rulerPlane: SVGGElement;
     private intersectionPlane: SVGGElement;
+    private overlayPlane: SVGGElement;
     private onScroll?: (left: number, top: number) => void;
     constructor(
         private container: HTMLDivElement,
@@ -27,10 +29,12 @@ export class EditorPlaneView {
         this.contentPlane = document.createElementNS(NS, "g");
         this.rulerPlane = document.createElementNS(NS, "g");
         this.intersectionPlane = document.createElementNS(NS, "g");
+        this.overlayPlane = document.createElementNS(NS, "g");
         this.drawingGroup.appendChild(this.backgroundPlane);
         this.drawingGroup.appendChild(this.contentPlane);
         this.drawingGroup.appendChild(this.rulerPlane);
         this.drawingGroup.appendChild(this.intersectionPlane);
+        this.drawingGroup.appendChild(this.overlayPlane);
         this.container.addEventListener("scroll", () => {
             this.onScroll?.(this.container.scrollLeft, this.container.scrollTop);
         });
@@ -69,14 +73,31 @@ export class EditorPlaneView {
         while (this.rulerPlane.firstChild) {
             this.rulerPlane.removeChild(this.rulerPlane.firstChild);
         }
+        while (this.overlayPlane.firstChild) {
+            this.overlayPlane.removeChild(this.overlayPlane.firstChild);
+        }
 
         this.contentPlane.style.transformOrigin = "top left";
         this.contentPlane.style.transform = `translate(${this.context.getCanvasMargins().left}px, ${this.context.getCanvasMargins().top}px)`;
 
+        this.overlayPlane.style.transformOrigin = "top left";
+        this.overlayPlane.style.transform = `translate(${this.context.getCanvasMargins().left}px, ${this.context.getCanvasMargins().top}px)`;
+
         this.addBackground(this.backgroundPlane);
 
         for (const element of this.model.getElements()) {
-            const view = new RectElementView(element, this.contentPlane);
+            const view = new RectElementView(this.contentPlane, element, this.context);
+            view.render();
+        }
+
+        for (const id of this.context.getSelectedIds()) {
+            console.log(id);
+            const rect = this.model.getElement(id);
+            if (!rect) {
+                console.log("not exists");
+                break;
+            }
+            const view = new RectSelectionOverlayView(this.overlayPlane, rect, this.context);
             view.render();
         }
 
