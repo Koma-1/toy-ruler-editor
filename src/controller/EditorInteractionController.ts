@@ -5,7 +5,7 @@ import { InteractionEvent } from "./events";
 import { InteractionEnvironment } from "./InteractionEnvironment";
 import { ControllerEvent, InteractionContext } from "./InteractionContext";
 
-export class EditorInteractionContoroller {
+export class EditorInteractionController {
     private childState: InteractionState;
     private context: InteractionContext;
 
@@ -40,7 +40,7 @@ export class EditorInteractionContoroller {
     }
 
     push(e: InteractionEvent): void {
-        console.log("EditorInteractionContoroller push:", e);
+        console.log("EditorInteractionController push:", e);
         this.childState.push(e);
     }
 

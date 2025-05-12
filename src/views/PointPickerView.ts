@@ -1,7 +1,7 @@
 import { EditorPlane } from "../core/EditorPlane";
 import { clientPointToSvgPoint, NS } from "../util/util";
 import { EditorContext } from "./EditorContext";
-import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+import { EditorInteractionController } from "../controller/EditorInteractionController";
 import { AbsolutePoint, RulerPointRef } from "../core/Position";
 import { InteractionEvent } from "../controller/events";
 

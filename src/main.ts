@@ -1,7 +1,7 @@
 import { XmlParser } from "./xml/XmlParser";
 import { EditorScreen } from "./views/EditorScreen";
 import { EditorContext } from "./views/EditorContext";
-import { EditorInteractionContoroller } from "./controller/EditorInteractionController";
+import { EditorInteractionController } from "./controller/EditorInteractionController";
 
 const editorScreen = document.getElementById('editorScreen') as HTMLDivElement;
 const textarea = document.getElementById('xmlInput') as HTMLTextAreaElement;

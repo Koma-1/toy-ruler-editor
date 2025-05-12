@@ -1,4 +1,4 @@
-import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+import { EditorInteractionController } from "../controller/EditorInteractionController";
 import { InsertRectState } from "../controller/InsertRectState";
 import { EditorPlane } from "../core/EditorPlane";
 import { SvgSerializer } from "../svg/SvgSerializer";
@@ -9,7 +9,7 @@ export class ToolBar {
         private container: HTMLDivElement,
         private model: EditorPlane,
         private context: EditorContext,
-        private controller: EditorInteractionContoroller
+        private controller: EditorInteractionController
     ) {}
 
     render() {
@@ -52,6 +52,10 @@ export class ToolBar {
             this.controller.enter(new InsertRectState());
         })
         this.container.appendChild(addRectButton);
+
+        const selectRectButton = document.createElement("button");
+        selectRectButton.innerText = "Select Rect";
+        
 
         const toglleSnapButton = document.createElement("button");
         toglleSnapButton.innerText = "Toggle Snap";

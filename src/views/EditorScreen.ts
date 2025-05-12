@@ -6,7 +6,7 @@ import { EditorContext } from "./EditorContext";
 import { ToolBar as ToolBarView } from "./ToolBarView";
 import { XAxisRulerAreaView } from "./XAxisRulerAreaView";
 import { YAxisRulerAreaView } from "./YAxisRulerAreaView";
-import { EditorInteractionContoroller } from "../controller/EditorInteractionController";
+import { EditorInteractionController } from "../controller/EditorInteractionController";
 import { InteractionEvent } from "../controller/events";
 
 export class EditorScreen {
@@ -14,15 +14,15 @@ export class EditorScreen {
     private rulerAreaView: RulerAreaView;
     private toolBarView: ToolBarView;
     private context: EditorContext;
-    public controller: EditorInteractionContoroller;
+    public controller: EditorInteractionController;
     constructor(
         private container: HTMLDivElement,
         private model: EditorPlane,
     ) {
         this.context = new EditorContext(model);
-        this.controller = new EditorInteractionContoroller({
+        this.controller = new EditorInteractionController({
             enableIntersectionPicker: (e) => {
-                console.log("EditorInteractionContoroller.env.enableIntersectionPicker ->", e);
+                console.log("EditorInteractionController.env.enableIntersectionPicker ->", e);
                 if (e) {
                     this.context.pointPicker.enable();
                     this.context.requestRender();
