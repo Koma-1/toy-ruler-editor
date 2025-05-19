@@ -10,7 +10,8 @@ export class ToolBar {
         private model: EditorPlane,
         private context: EditorContext,
         private controller: EditorInteractionController
-    ) {}
+    ) {
+    }
 
     render() {
         while (this.container.firstChild) {
@@ -56,12 +57,12 @@ export class ToolBar {
         const selectRectButton = document.createElement("button");
         selectRectButton.innerText = "Select Rect";
 
-        const toglleSnapButton = document.createElement("button");
-        toglleSnapButton.innerText = "Toggle Snap";
-        toglleSnapButton.addEventListener("click", (e) => {
+        const toggleSnapButton = document.createElement("button");
+        toggleSnapButton.innerText = "Toggle Snap";
+        toggleSnapButton.addEventListener("click", (e) => {
             this.context.pointPicker.toggleSnap();
         })
-        this.container.appendChild(toglleSnapButton);
+        this.container.appendChild(toggleSnapButton);
 
         const removeSelectedRectButton = document.createElement("button");
         removeSelectedRectButton.innerText = "Remove";
