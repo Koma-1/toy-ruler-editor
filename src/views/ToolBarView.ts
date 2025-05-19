@@ -5,12 +5,20 @@ import { SvgSerializer } from "../svg/SvgSerializer";
 import { EditorContext } from "./EditorContext";
 
 export class ToolBar {
+    private container: HTMLDivElement;
+    private container_container: HTMLDivElement;
     constructor (
-        private container: HTMLDivElement,
+        container: HTMLDivElement,
         private model: EditorPlane,
         private context: EditorContext,
         private controller: EditorInteractionController
     ) {
+        this.container_container = container;
+        this.container_container.style.verticalAlign = "top";
+        this.container = document.createElement("div");
+        this.container_container.appendChild(this.container);
+        this.container.style.display = "flex";
+        this.container.style.flexDirection = "column";
     }
 
     render() {
