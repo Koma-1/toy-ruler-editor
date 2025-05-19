@@ -1,9 +1,11 @@
 import { Ruler } from './Ruler';
 import { RectElement } from './Rect';
+import { IdRegistry } from './IdRegistry';
 
 export class EditorPlane {
     private rulers: Map<string, Ruler> = new Map();
     private elements: RectElement[] = [];
+    private idRegistry = new IdRegistry();
 
     constructor(
         private width?: number,
@@ -14,7 +16,9 @@ export class EditorPlane {
         for (const r of initialRulers) {
             this.rulers.set(r.id, r);
         }
-        this.elements = initialElements;
+        for (const elem of initialElements) {
+            this.addElement(elem);
+        }
     }
 
     getRuler(id: string): Ruler | undefined {
@@ -49,13 +53,24 @@ export class EditorPlane {
     }
 
     addElement(element: RectElement): void {
+        if (element.id === "") {
+            element.id = this.idRegistry.generateId("rect");
+        }
+        this.idRegistry.reserveId(element.id);
         this.elements.push(element);
     }
 
+    addRuler(ruler: Ruler): void {
+        if (ruler.id === "") {
+            ruler.id = this.idRegistry.generateId(ruler.direction);
+        }
+        this.idRegistry.reserveId(ruler.id);
+        this.rulers.set(ruler.id, ruler);
+    }
+
     removeElementById(id: string): void {
-        console.log(this.elements);
+        this.idRegistry.releaseId(id);
         this.elements = this.elements.filter(e => e.id !== id);
-        console.log("-> ", this.elements);
     }
 
     getWidth(): number {

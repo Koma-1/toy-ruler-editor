@@ -40,7 +40,7 @@ export class InsertRectState implements InteractionState {
             this.startPoint = e.point;
             this.stage = "end";
         } else {
-            const rect = new RectElement("__Rect", this.startPoint!, e.point);
+            const rect = new RectElement("", this.startPoint!, e.point);
             this.ctx.env.addElement(rect);
             this.exit();
             this.ctx.emitEvent({type: "complete"});
