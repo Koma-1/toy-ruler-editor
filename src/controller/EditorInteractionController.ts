@@ -49,14 +49,11 @@ export class EditorInteractionController {
     }
 
     push(e: InteractionEvent): void {
-        console.log("EditorInteractionController push:", e);
         this.childState.push(e);
     }
 
     enter(state: InteractionState): boolean {
-        console.log(this.childState.getMode());
         this.childState.push({type: "cancel"});
-        console.log("->", state.getMode());
         this.childState = state;
         state.enter?.(this.context);
         return true;

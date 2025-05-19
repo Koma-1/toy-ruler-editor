@@ -22,7 +22,6 @@ export class EditorScreen {
         this.context = new EditorContext(model);
         this.controller = new EditorInteractionController({
             enableIntersectionPicker: (e) => {
-                console.log("EditorInteractionController.env.enableIntersectionPicker ->", e);
                 if (e) {
                     this.context.pointPicker.enable();
                     this.context.requestRender();
@@ -50,7 +49,6 @@ export class EditorScreen {
             this.controller.push(e);
         });
         this.context.setSelectedIdsCallback(() => {
-            console.log("CALL getSelectedIdsCallback");
             return this.controller.getSelectedIds();
         });
 
