@@ -20,7 +20,12 @@ export class SvgSerializer {
             dom.setAttribute("y", String(y));
             dom.setAttribute("width", String(width));
             dom.setAttribute("height", String(height));
-            dom.setAttribute("fill", "lightgray");
+            const fill = elem.graphicsAttributes.get("fill");
+            if (fill === undefined) {
+                dom.setAttribute("fill", "lightgray");
+            } else {
+                dom.setAttribute("fill", fill);
+            }
             svg.appendChild(dom);
         }
         return new XMLSerializer().serializeToString(svg);

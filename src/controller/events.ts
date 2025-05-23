@@ -5,4 +5,5 @@ export type InteractionEvent =
     | {type: "pointSelected", point: PositionRefLike}
     | {type: "graphicsElementSelected", id: string}
     | {type: "command", command: "remove"}
+    | {type: "command", command: "fillColor", color: string}
     ;

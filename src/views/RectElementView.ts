@@ -29,6 +29,11 @@ export class RectElementView {
         this.dom.setAttribute("y", String(y));
         this.dom.setAttribute("width", String(width));
         this.dom.setAttribute("height", String(height));
-        this.dom.setAttribute("fill", "lightgray");
+        const fill = this.model.graphicsAttributes.get("fill");
+        if (fill !== undefined) {
+            this.dom.setAttribute("fill", fill);
+        } else {
+            this.dom.setAttribute("fill", "lightgray");
+        }
     }
 }

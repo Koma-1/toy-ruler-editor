@@ -26,6 +26,33 @@ export class ToolBar {
             this.container.removeChild(this.container.firstChild);
         }
 
+        const widthDiv = document.createElement("div");
+        this.container.appendChild(widthDiv);
+        const widthBox = document.createElement("input");
+        widthBox.setAttribute("type", "number");
+        widthBox.setAttribute("min", "0");
+        widthBox.value = String(this.model.getWidth());
+        widthBox.addEventListener("input", (e) => {
+            this.model.setWidth(Number(widthBox.value));
+            this.context.requestRender("only-EditorPlaneView");
+        });
+        widthDiv.innerText = "width:"
+        widthDiv.appendChild(widthBox);
+
+        const heightDiv = document.createElement("div");
+        this.container.appendChild(heightDiv);
+        const heightBox = document.createElement("input");
+        heightBox.setAttribute("type", "number");
+        heightBox.setAttribute("min", "0");
+        heightBox.value = String(this.model.getHeight());
+        heightBox.addEventListener("input", (e) => {
+            this.model.setHeight(Number(heightBox.value));
+            this.context.requestRender("only-EditorPlaneView");
+        });
+        heightDiv.innerText = "height:"
+        heightDiv.appendChild(heightBox);
+
+
         const zoomUp = document.createElement("button");
         this.container.appendChild(zoomUp);
         zoomUp.innerText = "Zoom Up";
@@ -71,6 +98,20 @@ export class ToolBar {
             this.context.pointPicker.toggleSnap();
         })
         this.container.appendChild(toggleSnapButton);
+
+        const selectColor = document.createElement("input");
+        selectColor.setAttribute("type", "color");
+        this.container.appendChild(selectColor);
+        if (this.controller.getSelectedIds().length !== 0) {
+            const fill = this.model.getElement(this.controller.getSelectedIds()[0])?.graphicsAttributes.get("fill");
+            if (fill === undefined) {
+            } else {
+                selectColor.value = fill;
+            }
+        }
+        selectColor.addEventListener("input", (e) => {
+            this.controller.push({type: "command", command: "fillColor", color: selectColor.value});
+        });
 
         const removeSelectedRectButton = document.createElement("button");
         removeSelectedRectButton.innerText = "Remove";

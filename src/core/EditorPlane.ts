@@ -60,6 +60,10 @@ export class EditorPlane {
         this.elements.push(element);
     }
 
+    setElementAttribute(elem: RectElement, key: string, value: string): void {
+        elem.graphicsAttributes.set(key, value);
+    }
+
     addRuler(ruler: Ruler): void {
         if (ruler.id === "") {
             ruler.id = this.idRegistry.generateId(ruler.direction);
@@ -77,7 +81,19 @@ export class EditorPlane {
         return this.width ?? 0;
     }
 
+    setWidth(width: number): void {
+        if (!isNaN(width)) {
+            this.width = width;
+        }
+    }
+
     getHeight(): number {
         return this.height ?? 0;
+    }
+
+    setHeight(height: number): void {
+        if (!isNaN(height)) {
+            this.height = height;
+        }
     }
 }
