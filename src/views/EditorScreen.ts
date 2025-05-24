@@ -44,6 +44,14 @@ export class EditorScreen {
                 this.model.removeElementById(id);
             },
             addElement: (e) => {this.model.addElement(e);},
+            setElementAttribute: (id, key, value) => {
+                const elem = this.model.getElement(id);
+                if (!elem) {
+                    return;
+                }
+                this.model.setElementAttribute(elem, key, value);
+                this.context.requestRender("only-EditorPlaneView");
+            },
         });
         this.context.setPushEventCallback((e: InteractionEvent) => {
             this.controller.push(e);
@@ -52,7 +60,15 @@ export class EditorScreen {
             return this.controller.getSelectedIds();
         });
 
-        this.context.setRenderCallback(() => {this.render();});
+        this.context.setRenderCallback((option) => {
+            console.log("option", option);
+            if (option == "only-EditorPlaneView") {
+                console.log("option", option);
+                this.editorPlaneView.render();
+            } else {
+                this.render();
+            }
+        });
         while (this.container.firstChild) {
             this.container.removeChild(this.container.firstChild);
         }

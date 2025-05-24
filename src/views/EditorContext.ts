@@ -7,7 +7,7 @@ export class EditorContext {
     private canvasMarginRight: number = 400;
     private canvasMarginBottom: number = 400;
     private canvasMarginLeft: number = 400;
-    private renderCallback: () => void = () => {};
+    private renderCallback: (option?: string) => void = () => {};
     private pushEventCallback: (e: InteractionEvent) => void = () => {};
     private getSelectedIdsCallback: () => string[] = () => {return []};
     readonly pointPicker = {
@@ -45,12 +45,12 @@ export class EditorContext {
 
     constructor(private model: EditorPlane) {}
 
-    setRenderCallback(callback: () => void) {
+    setRenderCallback(callback: (option?: string) => void) {
         this.renderCallback = callback;
     }
 
-    requestRender() {
-        this.renderCallback();
+    requestRender(option?: string) {
+        this.renderCallback(option);
     }
 
     setPushEventCallback(callback: (e: InteractionEvent) => void) {

@@ -6,4 +6,5 @@ export interface InteractionEnvironment {
     requestRender(): void;
     removeElement(id: string): void;
     addElement(element: RectElement): void;
+    setElementAttribute(id: string, key: string, value: string): void;
 }

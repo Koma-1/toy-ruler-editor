@@ -31,19 +31,25 @@ export class EditElementState implements InteractionState {
             if (this.ctx.selection.has(e.id)) {
                 this.ctx.selection.delete(e.id);
             } else {
+                this.ctx.selection.clear();
                 this.ctx.selection.add(e.id);
             }
+            this.ctx.env.requestRender();
         } else if (e.type == "command") {
             if (e.command == "remove") {
                 for (const id of this.ctx.selection.entries()) {
                     this.ctx.env.removeElement(id);
                 }
                 this.ctx.selection.clear();
+                this.ctx.env.requestRender();
+            } else if (e.command == "fillColor") {
+                for (const id of this.ctx.selection.entries()) {
+                    this.ctx.env.setElementAttribute(id, "fill", e.color);
+                }
             }
         } else {
             return;
         }
-        this.ctx.env.requestRender();
     }
 
 }
