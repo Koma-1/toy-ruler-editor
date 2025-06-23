@@ -1,6 +1,9 @@
 # Toy Ruler-Based Vector Graphics Editor
 
-このリポジトリは、学習目的の、ルーラーを使ったグラフィックスエディタです。
+このリポジトリは、学習目的の、ルーラーを使ったグラフィックスエディタのデモです。
+
+- [デモ](https://koma-1.github.io/toy-ruler-editor/)
+- [使い方](USAGE.md)
 
 ## 概要
 
